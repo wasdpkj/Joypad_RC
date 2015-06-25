@@ -1,4 +1,4 @@
-#define _DEBUG
+//#define _DEBUG
 #define FROM ZigduinoRadio
 #define DEBUG Serial
 
