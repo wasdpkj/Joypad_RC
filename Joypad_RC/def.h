@@ -2,7 +2,7 @@
 //MCU-------------
 
 //DEBUG-----------
-#define Serial_DEBUG
+//#define Serial_DEBUG
 
 //TFT-------------
 #define TFT_ROTATION
