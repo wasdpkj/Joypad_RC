@@ -2,7 +2,21 @@
 //MCU-------------
 
 //DEBUG-----------
-//#define Serial_DEBUG
+#define Serial_DEBUG
+
+//TFT-------------
+#define TFT_ROTATION
+#define THEME 0    //0 is white,1 is black
+
+#if THEME == 0
+#define TFT_BUT ST7735_WHITE
+#define TFT_TOP ST7735_BLACK
+#endif
+
+#if THEME == 1
+#define TFT_BUT ST7735_BLACK
+#define TFT_TOP ST7735_WHITE
+#endif
 
 //MWC-------------
 #if defined(__AVR_ATmega128RFA1__)
@@ -26,7 +40,7 @@
 #define PIN_bat A7	//BAT
 
 #define _V_max 42		//锂电池满电电压4.2V
-#define _V_min 37		//锂电池没电电压3.0V
+#define _V_min 37		//锂电池没电电压3.7V
 
 #if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
 //MPU-------------
@@ -37,26 +51,12 @@
 #define interval_debug  2000	//节点查错间隔
 #define nRF_channal 70    //0~125
 
-//TFT-------------
-//#define TFT_ROTATION
-#define THEME 0    //0 is white,1 is black
-
-#if THEME == 0
-#define TFT_BUT ST7735_WHITE
-#define TFT_TOP ST7735_BLACK
-#endif
-
-#if THEME == 1
-#define TFT_BUT ST7735_BLACK
-#define TFT_TOP ST7735_WHITE
-#endif
-
 //Joy-------------
 //1000~2000
 #define joy_DEAD_ZONE 10
-#define Joy_s_maximum 200
-#define Joy_maximum 500
-#define Joy_MID 1500
+#define Joy_s_maximum 200 //MAX 500
+#define Joy_maximum 450 //MAX 500
+#define Joy_MID 1500  //1500
 
 //Time------------
 #define interval_TIME1 2000    //setup delay

@@ -1,7 +1,5 @@
 #include "Arduino.h"
 
-boolean node_STA=false;
-
 byte inBuf[16];
 
 int outBuf[8]=
@@ -17,8 +15,6 @@ void data_begin()
 
   if(mode[0])    //Robot
   {
-    node_STA=!Joy1_sw;
-
     if(!sw_l)
     {
       Joy_x=Joy_MID;

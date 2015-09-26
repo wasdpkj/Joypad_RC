@@ -15,9 +15,14 @@ const uint16_t other_node=1;
 struct send_a	//发送
 {
   uint32_t ms;
-  uint32_t rf_STA;
-  uint32_t rf_throttle;
-  uint32_t rf_steering;
+  uint32_t rf_CH0;
+  uint32_t rf_CH1;
+  uint32_t rf_CH2;
+  uint32_t rf_CH3;
+  uint32_t rf_CH4;
+  uint32_t rf_CH5;
+  uint32_t rf_CH6;
+  uint32_t rf_CH7;
 };
 
 struct receive_a	//接收
@@ -54,7 +59,7 @@ void nrf_send()
 #endif
 
   send_a sen = {
-    millis(),node_STA,outBuf[1],outBuf[0]
+    millis(),outBuf[0],outBuf[1],outBuf[2],outBuf[3],outBuf[4],outBuf[5],outBuf[6],outBuf[7]
   };		//把这些数据发送出去，对应前面的发送数组
   RF24NetworkHeader header(other_node);
   if (network.write(header,&sen,sizeof(sen)))

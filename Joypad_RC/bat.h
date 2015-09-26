@@ -1,15 +1,13 @@
 int _V_bat=_V_min;
 
-#if defined(__AVR_ATmega128RFA1__)
-#define _V_math 12.1786  //5.0v
-#else
-#define _V_math 8.0457   //3.3v
-#endif
+#define MCU_VOLTAGE 3.3   // 5.0 or 3.3
+#define _V_fix 0.2  //fix battery voltage
+#define _V_math(Y) 10*(_V_fix+((Y*analogRead(PIN_bat)/1023.0f)/(33.0f/(51.0f+33.0f))))
 
 void vobat()
 {
   //_V_bat=10*((voltage*analogRead(PIN_bat)/1023.0f)/(33.0f/(51.0f+33.0f)));
-  _V_bat=analogRead(PIN_bat)/_V_math;
+  _V_bat=_V_math(MCU_VOLTAGE);
   if(_V_bat<_V_min) _V_bat=_V_min;
   if(_V_bat>_V_max) _V_bat=_V_max;
 
