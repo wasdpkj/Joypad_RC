@@ -94,9 +94,9 @@ void data_tx()
 
 /*
 if Core RF
-[head,2byte,0xAA 0xBB] [type,1byte,0xCC] [data,16byte] [body,2byte,0x0D,0x0A]
+[head,2byte,0xAA 0xBB] [type,1byte,0xCC] [data,16byte] [body,1byte(from getChecksum())]
  Example:
- AA BB CC 1A 01 1A 01 1A 01 2A 01 3A 01 4A 01 5A 01 6A 01 0D 0A
+ AA BB CC 1A 01 1A 01 1A 01 2A 01 3A 01 4A 01 5A 01 6A 01 0D **
  */
 void data_send()
 {
@@ -107,26 +107,20 @@ void data_send()
   buf_head[0]=0x24;  
   buf_head[1]=0x4D;  
   buf_head[2]=0x3C;
-
-  static byte buf_length[1];
-  buf_length[0]=0x10;
-
-  static byte buf_code[1];
-  buf_code[0]=0xC8;
 #endif
 
-  static byte buf_data[16];
-  for(int a=0;a<8;a++)
+  #define buf_length 0x10   //16
+  #define buf_code 0xC8     //200
+  
+  static byte buf_data[buf_length];
+  for(int a=0;a<(buf_length/2);a++)
   {
     buf_data[2*a]=RCoutB[a];
     buf_data[2*a+1]=RCoutA[a];
   }
 
-#if !defined(__AVR_ATmega128RFA1__)
-  byte check_sum=getChecksum(16,200,buf_data);
-  static byte buf_body[1];
-  buf_body[0]=check_sum;
-#endif
+  static byte buf_body;
+  buf_body=getChecksum(buf_length,buf_code,buf_data);
 
   //----------------------
 #if defined(__AVR_ATmega128RFA1__)
@@ -135,23 +129,17 @@ void data_send()
   mwc_port.write(0xbb);
   mwc_port.write(0xcc);
 #else
-  for(int a=0;a<3;a++)
+  for(int a=0;a<3;a++){
     mwc_port.write(buf_head[a]);
-  for(int a=0;a<1;a++)
-    mwc_port.write(buf_length[a]);
-  for(int a=0;a<1;a++)
-    mwc_port.write(buf_code[a]);
+  }
+  mwc_port.write(buf_length);
+  mwc_port.write(buf_code);
 #endif
-
-  for(int a=0;a<16;a++)
+  for(int a=0;a<buf_length;a++){
     mwc_port.write(buf_data[a]);
-
+  }
+  mwc_port.write(buf_body);
 #if defined(__AVR_ATmega128RFA1__)
-  mwc_port.write(0x0d);
-  mwc_port.write(0x0a);
   mwc_port.endTransmission();
-#else
-  for(int a=0;a<1;a++)
-    mwc_port.write(buf_body[a]);
 #endif
 }

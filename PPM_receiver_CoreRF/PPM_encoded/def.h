@@ -1,6 +1,7 @@
-//#define _DEBUG
+#define _DEBUG
 #define FROM ZigduinoRadio
 #define DEBUG Serial
+#define CHANNEL_NUM 8
 
 #define SAFE_CHANNEL_VAL 950
 #define SAFE_TIME_OUT 200
@@ -14,7 +15,7 @@
 #define AUX3 6
 #define AUX4 7
 
-//Select the right line depending on your radio brand. Feel free to modify the order in your PPM order is different 
+//Select the right line depending on your radio brand. Feel free to modify the order in your PPM order is different
 uint8_t PPM_LINE[8] =
 {
   ROLL, PITCH, YAW, THROTTLE, AUX1, AUX2, AUX3, AUX4

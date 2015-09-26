@@ -9,7 +9,7 @@
 #include <RCEncoder.h>
 
 //===================
-void setup() 
+void setup()
 {
   ZigduinoRadio.begin(11);
 #ifdef _DEBUG
@@ -20,7 +20,7 @@ void setup()
 }
 
 // the loop routine runs over and over again forever:
-void loop() 
+void loop()
 {
   protocol();
 

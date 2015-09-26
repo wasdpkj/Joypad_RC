@@ -59,6 +59,19 @@ void read_data(int _num, byte* _buf)
 #endif
 }
 
+byte getChecksum(byte length, byte cmd, byte mydata[])
+{
+  //三个参数分别为： 数据长度  ，  指令代码  ，  实际数据数组
+  byte checksum = 0;
+  checksum ^= (length & 0xFF);
+  checksum ^= (cmd & 0xFF);
+  for (int i = 0; i < length; i++)
+  {
+    checksum ^= (mydata[i] & 0xFF);
+  }
+  return checksum;
+}
+
 byte inChar, inCache;
 byte buffer[256];
 unsigned long num = 0;
@@ -81,12 +94,9 @@ void protocol()
     delayMicroseconds(200);
   }
 
-  if (sta)
-  {
+  if (sta) {
     sta = false;
-
-    switch (inChar)
-    {
+    switch (inChar) {
       case 0xCC:
         error = false;
         type = 1;
@@ -104,8 +114,7 @@ void protocol()
     num = 0;
   }
 
-  if (inChar == 0xbb && inCache == 0xaa)
-  {
+  if (inChar == 0xBB && inCache == 0xAA) {
     sta = true;
 #ifdef _DEBUG
     DEBUG.println("\n\r");
@@ -113,46 +122,37 @@ void protocol()
 #endif
   }
 
-
-  if (inChar == 0x0a && inCache == 0x0d)
-  {
-    inChar = NULL;
-    inCache = NULL;
-
-    num -= 2;
+  if (num  == (CHANNEL_NUM * 2 + 1)) {
+    inCache = buffer[CHANNEL_NUM * 2];
+    buffer[CHANNEL_NUM * 2] = NULL;
+    inChar = getChecksum(CHANNEL_NUM * 2, 200, buffer);
 
 #ifdef _DEBUG
     DEBUG.print("NUM[");
-    DEBUG.print(num);
+    DEBUG.print(CHANNEL_NUM * 2);
     DEBUG.print("]:");
-    for (long a = 0; a < num; a++)
-    {
+    for (long a = 0; a < num; a++) {
       DEBUG.print(buffer[a], HEX);
       DEBUG.print(" ");
     }
     DEBUG.println(" ");
 #endif
 
-    if (error || num!=16)
-    {
-#ifdef _DEBUG
-      DEBUG.println("DATA ERROR");
-#endif
-    }
-    else
-    {
+    if (!error && inCache == inChar) {
 #ifdef _DEBUG
       DEBUG.println("DATA OK");
 #endif
-      read_data(num, buffer);
-
-      //---------------------
+      read_data(CHANNEL_NUM * 2, buffer);
 #ifdef _DEBUG
       DEBUG.println("\n\rsendDATA READY");
 #endif
-
       RC_write(RC_data);
       ///      delay(8);
+    }
+    else {
+#ifdef _DEBUG
+      DEBUG.println("DATA ERROR");
+#endif
     }
 #ifdef _DEBUG
     //DEBUG.print("\n\r");
