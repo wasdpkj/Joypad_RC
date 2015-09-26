@@ -17,5 +17,5 @@
 //Select the right line depending on your radio brand. Feel free to modify the order in your PPM order is different 
 uint8_t PPM_LINE[8] =
 {
-  ROLL, PITCH, THROTTLE, YAW, AUX1, AUX2, AUX3, AUX4
+  ROLL, PITCH, YAW, THROTTLE, AUX1, AUX2, AUX3, AUX4
 };

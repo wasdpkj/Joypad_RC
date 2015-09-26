@@ -48,7 +48,7 @@ void read_data(int _num, byte* _buf)
     RC_data_c[a] = _bufin[a];
   }
 
-  for (int a = 0; a < _num/2; a++)
+  for (int a = 0; a < _num; a++)
   {
     RC_data[a] = RC_data_c[PPM_LINE[a]];
   }
