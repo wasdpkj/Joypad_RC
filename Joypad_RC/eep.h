@@ -7,8 +7,18 @@
 
 struct config_type
 {
-  int eeprom_correct_vol[4];
-  boolean eeprom_mode[2];
+  int16_t eeprom_correct_min[4];
+  int16_t eeprom_correct_max[4];
+  uint8_t eeprom_Joy_deadzone_val;
+#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
+  boolean eeprom_mode_mpu;
+#endif
+  boolean eeprom_mode_protocol;
+  uint8_t eeprom_mwc_channal;
+  uint8_t eeprom_nrf_channal;
+  boolean eeprom_tft_theme;
+  boolean eeprom_tft_rotation;
+  boolean eeprom_mcu_voltage;
 };
 
 //======================================
@@ -18,15 +28,23 @@ void eeprom_read()
   config_type config_readback;
   EEPROM_read(0, config_readback);
 
-  mode[0]=config_readback.eeprom_mode[0];
+  for (uint8_t a = 0; a < 4; a++)
+  {
+    joy_correct_min[a] = config_readback.eeprom_correct_min[a];
+    joy_correct_max[a] = config_readback.eeprom_correct_max[a];
+  }
+  Joy_deadzone_val = config_readback.eeprom_Joy_deadzone_val;
+
+  mode_protocol = config_readback.eeprom_mode_protocol;
 #if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
-  mode[1]=config_readback.eeprom_mode[1];
+  mode_mpu = config_readback.eeprom_mode_mpu;
 #endif
 
-  for(int a=0;a<4;a++)
-  {
-    joy_correct_vol[a]=config_readback.eeprom_correct_vol[a];
-  }
+  mwc_channal = config_readback.eeprom_mwc_channal;
+  nrf_channal = config_readback.eeprom_nrf_channal;
+  tft_theme = config_readback.eeprom_tft_theme;
+  tft_rotation = config_readback.eeprom_tft_rotation;
+  mcu_voltage = config_readback.eeprom_mcu_voltage;
 }
 
 void eeprom_write()
@@ -34,17 +52,24 @@ void eeprom_write()
   // 定义结构变量config，并定义config的内容
   config_type config;
 
-  config.eeprom_mode[0] = mode[0];
+  for (uint8_t a = 0; a < 4; a++)
+  {
+    config.eeprom_correct_min[a] = joy_correct_min[a];
+    config.eeprom_correct_max[a] = joy_correct_max[a];
+  }
+  config.eeprom_Joy_deadzone_val = Joy_deadzone_val;
 
+  config.eeprom_mode_protocol = mode_protocol;
 #if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
-  config.eeprom_mode[1] = mode[1];
+  config.eeprom_mode_mpu = mode_mpu;
 #endif
 
-  for(int a=0;a<4;a++)
-  {
-    config.eeprom_correct_vol[a] = abs(joy_correct_vol[a])+joy_DEAD_ZONE;
-  } 
+  config.eeprom_mwc_channal = mwc_channal;
+  config.eeprom_nrf_channal = nrf_channal;
+  config.eeprom_tft_theme = tft_theme;
+  config.eeprom_tft_rotation = tft_rotation;
+  config.eeprom_mcu_voltage = mcu_voltage;
 
   // 变量config存储到EEPROM，地址0写入
-  EEPROM_write(0, config); 	
+  EEPROM_write(0, config);
 }

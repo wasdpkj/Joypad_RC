@@ -7,11 +7,11 @@
 #endif
 #include "joy.h"
 #include "key.h"
-#include "eep.h"
 #include "data.h"
 #include "nrf.h"
 #include "mwc.h"
 #include "tft.h"
+#include "eep.h"
 
 #if defined(__AVR_ATmega128RFA1__)
 #include <ZigduinoRadio.h>
@@ -29,7 +29,7 @@
 #include <RF24Network.h>
 #include <RF24.h>
 
-#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__) 
+#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
 //MPU===================================
 #include "Wire.h"
 #include "I2Cdev.h"
@@ -39,7 +39,7 @@
 //spi===================================
 #include <SPI.h>
 
-void setup() 
+void setup()
 {
   // initialize serial communication at 115200 bits per second:
 
@@ -54,20 +54,26 @@ void setup()
 
   //---------------
 #ifdef Serial_DEBUG
+  Serial.println("\n\r EEPROM READ...");
+#endif
+  eeprom_read();
+
+  //---------------
+#ifdef Serial_DEBUG
   Serial.println("\n\r TFT INIT...");
 #endif
-  TFT_init(true);
+  TFT_init(true, tft_rotation);
 
   //---------------
 #ifdef Serial_DEBUG
   Serial.println("\n\r TFT BEGIN...");
 #endif
-  TIME1=millis();
-  while(millis()-TIME1<interval_TIME1)
+  TIME1 = millis();
+  while (millis() - TIME1 < interval_TIME1)
   {
     TFT_begin();
 
-    if(!Joypad.readButton(CH_SWITCH_1))
+    if (!Joypad.readButton(CH_SWITCH_1))
     {
 #ifdef Serial_DEBUG
       Serial.println("\n\rCorrect IN...");
@@ -77,12 +83,11 @@ void setup()
 #ifdef Serial_DEBUG
       Serial.println("\n\r TFT INIT...");
 #endif
-      TFT_init(false);
+      TFT_init(false, tft_rotation);
 
-      while(1)
+      while (1)
       {
-        Joy_correct();
-        if(!Joypad.readButton(CH_SWITCH_2))
+        if (!TFT_config())
           break;
       }
 #ifdef Serial_DEBUG
@@ -99,12 +104,6 @@ void setup()
 
   //---------------
 #ifdef Serial_DEBUG
-  Serial.println("\n\r EEPROM READ...");
-#endif
-  eeprom_read();
-
-  //---------------
-#ifdef Serial_DEBUG
   Serial.println("\n\r TFT CLEAR...");
 #endif
   TFT_clear();
@@ -116,15 +115,38 @@ void setup()
   TFT_ready();
 
   //---------------.l
-  if(mode[0])    //Robot
+  if (mode_protocol)   //Robot
   {
     SPI.begin();		//初始化SPI总线
     radio.begin();
-    network.begin(/*channel*/ nRF_channal, /*node address*/ this_node);
+    network.begin(/*channel*/ nrf_channal, /*node address*/ this_node);
   }
   else          //QuadCopter
   {
-    mwc_port.begin(mwc_port_speed);
+    unsigned long _channel;
+#if !defined(__AVR_ATmega128RFA1__)
+    switch (mwc_channal)
+    {
+      case 0:
+        _channel = 9600;
+        break;
+      case 1:
+        _channel = 19200;
+        break;
+      case 2:
+        _channel = 38400;
+        break;
+      case 3:
+        _channel = 57600;
+        break;
+      case 4:
+        _channel = 115200;
+        break;
+    }
+#else if
+    _channel = mwc_channal;
+#endif
+    mwc_port.begin(_channel);
   }
 
   //---------------
@@ -132,19 +154,18 @@ void setup()
   Serial.println("===========start===========");
 #endif
 
-#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__) 
-  if(mode[1]) initMPU();  //initialize device
+#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
+  if (mode_mpu) initMPU(); //initialize device
 #endif
-
 }
 
-void loop() 
+void loop()
 {
   //  unsigned long time = millis();
 
-#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__) 
+#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
   //MPU--------------------------------
-  if(mode[1]) 
+  if (mode_mpu)
     getMPU();
 #endif
 
@@ -152,13 +173,13 @@ void loop()
   data_begin();
 
   //DATA_send-------------------------------
-  if(millis()<time2) time2=millis();
-  if(millis()-time2>interval_time2)
+  if (millis() < time2) time2 = millis();
+  if (millis() - time2 > interval_time2)
   {
-    if(mode[0]) nrf_send();     //Robot
+    if (mode_protocol) nrf_send();    //Robot
     else data_send();           //QuadCopter
 
-    time2=millis();
+    time2 = millis();
   }
 
   //节点查错-------------------------------
@@ -166,10 +187,10 @@ void loop()
 
   //BAT--------------------------------
   if (time3 > millis()) time3 = millis();
-  if(millis()-time3>interval_time3)
+  if (millis() - time3 > interval_time3)
   {
     vobat();
-    time3=millis();
+    time3 = millis();
   }
 
   //TFT------------------------------------
@@ -180,4 +201,3 @@ void loop()
 
   //  Serial.println(time, DEC);    //loop time
 }
-

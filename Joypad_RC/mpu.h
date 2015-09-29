@@ -1,11 +1,15 @@
+#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
 #include "Wire.h"
 #include "I2Cdev.h"
 #include "MPU6050_6Axis_MotionApps20.h"
 
 MPU6050 mpu;
 
+//MPU-------------
+#define MPU_maximum 70
+
 // MPU control/status vars
-bool dmpReady = false;  // set true if DMP init was successful
+boolean dmpReady = false;  // set true if DMP init was successful
 uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
 uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
 uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
@@ -29,7 +33,7 @@ void initMPU()
 #ifdef Serial_DEBUG
   Serial.println(F("Testing device connections..."));
 #endif
-  if(mpu.testConnection())
+  if (mpu.testConnection())
   {
 #ifdef Serial_DEBUG
     Serial.println("MPU6050 connection successful");
@@ -62,7 +66,7 @@ void initMPU()
 
     // get expected DMP packet size for later comparison
     packetSize = mpu.dmpGetFIFOPacketSize();
-  } 
+  }
   else {
     // ERROR!
     // 1 = initial memory load failed
@@ -87,7 +91,7 @@ void getMPU()
     fifoCount = mpu.getFIFOCount();
 
     // check for overflow (this should never happen unless our code is too inefficient)
-    if ((mpuIntStatus & 0x10) || fifoCount == 1024) 
+    if ((mpuIntStatus & 0x10) || fifoCount == 1024)
     {
       // reset so we can continue cleanly
       mpu.resetFIFO();
@@ -95,8 +99,8 @@ void getMPU()
       Serial.println(F("FIFO overflow!"));
 #endif
       // otherwise, check for DMP data ready interrupt (this should happen frequently)
-    } 
-    else if (mpuIntStatus & 0x02) 
+    }
+    else if (mpuIntStatus & 0x02)
     {
       // wait for correct available data length, should be a VERY short wait
       while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
@@ -122,3 +126,5 @@ void getMPU()
     }
   }
 }
+
+#endif
