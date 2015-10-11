@@ -15,14 +15,14 @@ RF24Network network(radio);
 struct send_a	//发送
 {
   uint32_t ms;
-  uint32_t rf_CH0;
-  uint32_t rf_CH1;
-  uint32_t rf_CH2;
-  uint32_t rf_CH3;
-  uint32_t rf_CH4;
-  uint32_t rf_CH5;
-  uint32_t rf_CH6;
-  uint32_t rf_CH7;
+  uint16_t rf_CH0;
+  uint16_t rf_CH1;
+  uint16_t rf_CH2;
+  uint16_t rf_CH3;
+  uint16_t rf_CH4;
+  uint16_t rf_CH5;
+  uint16_t rf_CH6;
+  uint16_t rf_CH7;
 };
 
 struct receive_a	//接收
