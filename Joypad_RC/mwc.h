@@ -94,9 +94,9 @@ void data_tx()
 
 /*
 if Core RF
-[head,2byte,0xAA 0xBB] [type,1byte,0xCC] [data,16byte] [body,1byte(from getChecksum())]
+[head,2byte,0xAA 0xBB] [code,1byte,0xC8] [data,16byte] [body,1byte(from getChecksum())]
  Example:
- AA BB CC 1A 01 1A 01 1A 01 2A 01 3A 01 4A 01 5A 01 6A 01 0D **
+ AA BB C8 1A 01 1A 01 1A 01 2A 01 3A 01 4A 01 5A 01 6A 01 0D **
  */
 void data_send()
 {
@@ -127,14 +127,13 @@ void data_send()
   mwc_port.beginTransmission();
   mwc_port.write(0xaa);
   mwc_port.write(0xbb);
-  mwc_port.write(0xcc);
 #else
   for (uint8_t a = 0; a < 3; a++) {
     mwc_port.write(buf_head[a]);
   }
   mwc_port.write(buf_length);
-  mwc_port.write(buf_code);
 #endif
+  mwc_port.write(buf_code);
   for (uint8_t a = 0; a < buf_length; a++) {
     mwc_port.write(buf_data[a]);
   }

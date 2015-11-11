@@ -1,9 +1,9 @@
 #include "arduino.h"
 //======================
 /*
-[head,2byte,0xAA 0xBB] [type,1byte,0xCC] [data,16byte] [body,2byte,0x0D,0x0A]
+[head,2byte,0xAA 0xBB] [type,1byte,0xC8] [data,16byte] [body,2byte,0x0D,0x0A]
  Example:
- AA BB CC 1A 01 1A 01 1A 01 2A 01 3A 01 4A 01 5A 01 6A 01 0D 0A
+ AA BB C8 1A 01 1A 01 1A 01 2A 01 3A 01 4A 01 5A 01 6A 01 0D 0A
  */
 
 //-------------------------
@@ -97,7 +97,7 @@ void protocol()
   if (sta) {
     sta = false;
     switch (inChar) {
-      case 0xCC:
+      case 0xC8:
         error = false;
         type = 1;
 #ifdef _DEBUG
