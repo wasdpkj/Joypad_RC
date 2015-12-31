@@ -56,7 +56,8 @@ void setup()
 #ifdef Serial_DEBUG
   Serial.println("\n\r EEPROM READ...");
 #endif
-  eeprom_read();
+  if (!eeprom_read())
+    eeprom_write(false);
 
   //---------------
 #ifdef Serial_DEBUG
@@ -98,7 +99,7 @@ void setup()
 #ifdef Serial_DEBUG
       Serial.println("\n\r EEPROM WRITE...");
 #endif
-      eeprom_write();
+      eeprom_write(true);
     }
   }
 

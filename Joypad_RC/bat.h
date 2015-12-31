@@ -1,6 +1,15 @@
 int8_t _V_bat = _V_min;
 
-boolean mcu_voltage = true; // 5.0 or 3.3
+#if F_CPU == 16000000
+#if defined(__AVR_ATmega128RFA1__)
+boolean mcu_voltage = false; // 3.3
+#else
+boolean mcu_voltage = true; // 5.0
+#endif
+#else
+boolean mcu_voltage = false; // 3.3
+#endif
+
 #define _V_fix 0.2  //fix battery voltage
 #define _V_math(Y) (_V_fix+((Y*analogRead(PIN_bat)/1023.0f)/(33.0f/(51.0f+33.0f))))
 

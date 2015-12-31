@@ -4,7 +4,11 @@
 #define Serial_DEBUG
 
 //MWC-------------
+#if defined(__AVR_ATmega128RFA1__)
 uint8_t mwc_channal = 11; //RF channel
+#else
+uint8_t mwc_channal = 4; //RF channel
+#endif
 
 #if  defined(__AVR_ATmega32U4__)
 #define mwc_port Serial1    //Serial1 is D0 D1

@@ -330,7 +330,7 @@ boolean TFT_config()
         }
         break;
 
-#if !(defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__))
+#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
       case 3: { //mpu
           mode_mpu = menu_num_B;
           tft_cache = 1;

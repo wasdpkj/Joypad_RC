@@ -9,7 +9,7 @@ uint8_t Joy_deadzone_val = 10;
 #define Joy_maximum 450 //MAX 500
 #define Joy_MID 1500  //1500
 
-boolean mode_mpu, mode_protocol;   //{(0: 0 is mwc, 1 is nrf),(1: 0 is mpu, 1 is no mpu)}
+boolean mode_mpu = false, mode_protocol = false; //{(mode_protocol: 0 is mwc, 1 is nrf),(mode_mpu: 0 is no mpu, 1 is mpu)}
 
 int16_t joy_correct_max[4], joy_correct_min[4];
 int16_t Joy_x, Joy_y, Joy1_x, Joy1_y;
