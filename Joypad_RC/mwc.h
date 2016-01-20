@@ -94,9 +94,9 @@ void data_tx()
 
 /*
 if Core RF
-[head,2byte,0xAA 0xBB] [code,1byte,0xC8] [data,16byte] [body,1byte(from getChecksum())]
- Example:
- AA BB C8 1A 01 1A 01 1A 01 2A 01 3A 01 4A 01 5A 01 6A 01 0D **
+  [head,2byte,0xAA 0xBB] [type,1byte,TYPE_NUM] [data,16byte] [body,1byte,getChecksum()]
+  Example:
+  AA BB C8 DC 05 DC 05 D0 07 EF 03 DC 05 DC 05 DC 05 DC 05 E3
  */
 void data_send()
 {
