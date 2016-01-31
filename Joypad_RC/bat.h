@@ -2,7 +2,7 @@
 #define PIN_bat A7  //BAT
 
 #define _V_max 41   //�4.2V
-#define _V_min 36   //�3.7V
+#define _V_min 35   //�3.7V
 
 int8_t _V_bat = _V_min;
 int8_t _V_bat_RC = _V_min;

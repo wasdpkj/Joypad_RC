@@ -43,13 +43,11 @@ uint16_t  tft_colorD = 0xEABF;
 int8_t tft_cache = 1;
 
 //======================================
-void TFT_clear()
-{
+void TFT_clear() {
   tft.fillScreen(tft_colorB);
 }
 
-void TFT_init(boolean _init, boolean _rot)
-{
+void TFT_init(boolean _init, boolean _rot) {
   tft_colorB = tft_theme ? TFT_TOP : TFT_BUT;
   tft_colorA = tft_theme ? TFT_BUT : TFT_TOP;
 
@@ -73,8 +71,7 @@ void TFT_init(boolean _init, boolean _rot)
   tft.fillRect(0, 40, tft_width, 120, tft_colorB);
 }
 
-void TFT_begin()
-{
+void TFT_begin() {
   setFont_S;
 
   tft.setTextColor(tft_colorA);
@@ -117,22 +114,19 @@ char *menu_str_b[3][3] = {
 };
 #endif
 
-void TFT_menu(int8_t _num, char *_data)
-{
+void TFT_menu(int8_t _num, char *_data) {
   tft.drawRect(7, 49 + 15 * _num, 114, 16, tft_colorA);
   tft.setCursor(10, 54 + 15 * _num);
   tft.print(_data);
 }
 
-void TFT_menu(int8_t _num, int16_t _data)
-{
+void TFT_menu(int8_t _num, int16_t _data) {
   tft.drawRect(7, 49 + 15 * _num, 114, 16, tft_colorA);
   tft.setCursor(10, 54 + 15 * _num);
   tft.print(_data);
 }
 
-void TFT_cursor(int8_t _num)
-{
+void TFT_cursor(int8_t _num) {
   tft.drawLine(1, 51 + 15 * _num, 4, 56 + 15 * _num, tft_colorA);
   tft.drawLine(4, 57 + 15 * _num, 1, 62 + 15 * _num, tft_colorA);
   tft.drawLine(1, 51 + 15 * _num, 1, 62 + 15 * _num, tft_colorA);
@@ -140,8 +134,7 @@ void TFT_cursor(int8_t _num)
 
 boolean return_menu = false;
 
-boolean TFT_config()
-{
+boolean TFT_config() {
   tft.setTextColor( tft_colorA);
 
   if (key_get(0, 1)) {
@@ -457,6 +450,10 @@ void TFT_ready()
   tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2, 2 + 2 + tft_bat_y, tft_bat_x, tft_bat_y, tft_colorB);
   tft.drawRect(tft_width - tft_bat_x_s - 2, 2 + 2 + tft_bat_y + (tft_bat_y - tft_bat_y_s) / 2, tft_bat_x_s, tft_bat_y_s, tft_colorB);
 
+  for (int a = 0; a < 4; a++) {
+    tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a), 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), 4, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), tft_colorB);
+  }
+
   tft.setTextColor(tft_colorB);
   setFont_S;
 
@@ -490,7 +487,7 @@ void TFT_run() {
 
   if (!_b && ((Joy_time[1] / 1000) % 2)) {
     _b = !_b;
-    tft.fillRect(_Q_font_x + 30, 16, 50, 7, tft_colorA);
+    tft.fillRect(_Q_font_x + 30, 16, 45, 7, tft_colorA);
     tft.setTextColor(tft_colorB);
     tft.setCursor(_Q_font_x + 30, 16);
     tft.print((Joy_time[1] / 1000) / 60);
@@ -516,11 +513,9 @@ void TFT_run() {
 
   for (int a = 0; a < 4; a++) {
     if ((a == 3 && _RSSI == 0) || (a == 2 && _RSSI <= 1) || (a == 1 && _RSSI <= 2) || (a == 0 && _RSSI <= 3))
-      tft.fillRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a), 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), 4, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), tft_colorB);
-    else {
-      tft.fillRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a), 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), 4, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), tft_colorA);
-      tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a), 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), 4, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), tft_colorB);
-    }
+      tft.fillRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a) + 1, 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25) + 1, 4 - 2, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25) - 2, tft_colorB);
+    else
+      tft.fillRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a) + 1, 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25) + 1, 4 - 2, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25) - 2, tft_colorA);
   }
 
   for (uint8_t a = 0; a < 8; a++) {
