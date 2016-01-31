@@ -5,7 +5,7 @@
 #include <SPI.h>
 
 Adafruit_ST7735 tft = Adafruit_ST7735(5, 4, -1);    //cs,dc,rst
-//-------字体设置，大、中、小
+
 #define setFont_M tft.setTextSize(2)
 #define setFont_S tft.setTextSize(0)
 
@@ -23,10 +23,10 @@ uint16_t  tft_colorB = TFT_TOP;
 uint16_t  tft_colorC = 0x06FF;
 uint16_t  tft_colorD = 0xEABF;
 
-#define tft_bat_x 24
-#define tft_bat_y 12
+#define tft_bat_x 18
+#define tft_bat_y 9
 #define tft_bat_x_s 2
-#define tft_bat_y_s 6
+#define tft_bat_y_s 4
 
 #define tft_font_s_height 8
 #define tft_font_m_height 16
@@ -92,7 +92,7 @@ int8_t menu_num_A = 0;
 int8_t menu_num_B = 0;
 int8_t menu_sta = 0;
 
-#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
+#if defined(LARGE_FLASH)
 char *menu_str_a[5] = {
   "Joystick Config", "Protocol Config", "System Config", "Gyroscope Config", "Exit"
 };
@@ -102,7 +102,7 @@ char *menu_str_a[4] = {
 };
 #endif
 
-#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
+#if defined(LARGE_FLASH)
 char *menu_str_b[4][3] = {
   {"Joystick Correct.", "Dead Zone config"},
   {"Mode", "Quadrotor Channel", "nRF24 Channel"},
@@ -247,7 +247,7 @@ boolean TFT_config()
               }
               break;
             case 1: {
-#if !defined(__AVR_ATmega128RFA1__)
+#if !defined(RF_PORT)
                 char *menu_str_c[5] = {"9600", "19200", "38400", "57600", "115200"};
 #endif
                 if (key_get(2, 1)) {
@@ -259,7 +259,7 @@ boolean TFT_config()
                   tft.fillRect(0, 40, tft_width, 100, tft_colorB);
                 }
 
-#if !defined(__AVR_ATmega128RFA1__)
+#if !defined(RF_PORT)
                 mwc_channal = constrain(mwc_channal, 0, 4);
                 TFT_menu(0, menu_str_c[mwc_channal]);
 #else
@@ -330,7 +330,7 @@ boolean TFT_config()
         }
         break;
 
-#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
+#if defined(LARGE_FLASH)
       case 3: { //mpu
           mode_mpu = menu_num_B;
           tft_cache = 1;
@@ -351,7 +351,7 @@ boolean TFT_config()
   */
   //----------------------------
   if (menu_sta == 1) {
-#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
+#if defined(LARGE_FLASH)
     int8_t meun_b_max[5] = {1, 2, 2, 1, 0};
 #else
     int8_t meun_b_max[4] = {1, 2, 2, 0};
@@ -390,7 +390,7 @@ boolean TFT_config()
       tft.fillRect(0, 40, 5, 100, tft_colorB);
       menu_num_A++;
     }
-#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
+#if defined(LARGE_FLASH)
     menu_num_A = constrain(menu_num_A, 0, 4);
 #else
     menu_num_A = constrain(menu_num_A, 0, 3);
@@ -399,7 +399,7 @@ boolean TFT_config()
     TFT_cursor(menu_num_A);
 
     if (tft_cache) {
-#if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
+#if defined(LARGE_FLASH)
       for (uint8_t a = 0; a < 5; a++) {
 #else
       for (uint8_t a = 0; a < 4; a++) {
@@ -454,6 +454,9 @@ void TFT_ready()
   tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2, 2, tft_bat_x, tft_bat_y, tft_colorB);
   tft.drawRect(tft_width - tft_bat_x_s - 2, 2 + (tft_bat_y - tft_bat_y_s) / 2, tft_bat_x_s, tft_bat_y_s, tft_colorB);
 
+  tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2, 2 + 2 + tft_bat_y, tft_bat_x, tft_bat_y, tft_colorB);
+  tft.drawRect(tft_width - tft_bat_x_s - 2, 2 + 2 + tft_bat_y + (tft_bat_y - tft_bat_y_s) / 2, tft_bat_x_s, tft_bat_y_s, tft_colorB);
+
   tft.setTextColor(tft_colorB);
   setFont_S;
 
@@ -474,8 +477,7 @@ void TFT_ready()
 }
 
 boolean _a = false, _b = false;
-void TFT_run()
-{
+void TFT_run() {
   if (outBuf[3] > (Joy_MID - Joy_maximum)) {
     if (_a) {
       Joy_time[0] = millis() - Joy_time[1];
@@ -501,6 +503,25 @@ void TFT_run()
   //battery------------------
   tft.fillRect(tft_width - tft_bat_x - 3, 3, map(_V_bat, _V_min, _V_max, 0, tft_bat_x - 2) , tft_bat_y - 2, tft_colorB);
   tft.fillRect(tft_width - tft_bat_x - 3 + map(_V_bat, _V_min, _V_max, 0, tft_bat_x - 2), 3, map(_V_bat, _V_min, _V_max, tft_bat_x - 2, 0) , tft_bat_y - 2, tft_colorA);
+
+  tft.fillRect(tft_width - tft_bat_x - 3, 3 + 2 + tft_bat_y, map(_V_bat_RC, _V_min, _V_max, 0, tft_bat_x - 2) , tft_bat_y - 2, tft_colorB);
+  tft.fillRect(tft_width - tft_bat_x - 3 + map(_V_bat_RC, _V_min, _V_max, 0, tft_bat_x - 2), 3 + 2 + tft_bat_y, map(_V_bat_RC, _V_min, _V_max, tft_bat_x - 2, 0) , tft_bat_y - 2, tft_colorA);
+
+  if (!nodeClock())
+    RSSI = -90;
+  else if (!mode_protocol) {
+    RSSI = constrain(RSSI, -90, -40);
+  }
+  int8_t _RSSI = map(RSSI, -90, -40, 3, 0);
+
+  for (int a = 0; a < 4; a++) {
+    if ((a == 3 && _RSSI == 0) || (a == 2 && _RSSI <= 1) || (a == 1 && _RSSI <= 2) || (a == 0 && _RSSI <= 3))
+      tft.fillRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a), 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), 4, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), tft_colorB);
+    else {
+      tft.fillRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a), 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), 4, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), tft_colorA);
+      tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a), 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), 4, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), tft_colorB);
+    }
+  }
 
   for (uint8_t a = 0; a < 8; a++) {
     int8_t _C_x_A0, _C_x_B0, _C_x_A, _C_x_B, _C_x_A1, _C_x_B1;
@@ -544,7 +565,4 @@ void TFT_run()
 
     tft.fillRect(_C_x_M,  _Q_y + a * 15 - 1, 1, _W_y + 2, tft_colorD);
   }
-  //netsta------------------
-  tft.fillRect(0, 158, 128, 2, node_clock_error ? tft_colorD : tft_colorC);
 }
-

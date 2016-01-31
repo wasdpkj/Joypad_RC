@@ -1,47 +1,41 @@
 #include "Arduino.h"
+#include "joy.h"
 
 byte inBuf[16];
 
-int16_t outBuf[8] =
-{
+int16_t outBuf[8] = {
   Joy_MID, Joy_MID, Joy_MID, Joy_MID, Joy_MID, Joy_MID, Joy_MID, Joy_MID
 };
 
-boolean AUX[4] = {0, 0, 0, 0};
-//======================================
-void data_begin()
-{
-  Joy();
+void data_begin(int16_t * _channal_0, int16_t * _channal_1, int16_t * _channal_2, int16_t * _channal_3, int16_t * _channal_4, int16_t * _channal_5, int16_t * _channal_6, int16_t * _channal_7) {
+  joypadUpdata();
 
-  if (mode_protocol)   //Robot
-  {
-    if (!sw_l)
-    {
+  if (mode_protocol) {  //Robot
+    if (!Joy_sw_l) {
       Joy_x = Joy_MID;
       Joy_y = Joy_MID;
       Joy1_x = Joy_MID;
       Joy1_y = Joy_MID;
     }
   }
-  else        //QuadCopter
-  {
-    if (!sw_l)
-      Joy_y = Joy_MID - Joy_maximum;
+  else {       //QuadCopter
+    if (!Joy_sw_l) Joy_y = Joy_MID - Joy_maximum;
   }
 
-  //but---------------------------------
-  for (uint8_t a = 0; a < 4; a++)
-  {
-    if (key_get(a, 1))  AUX[a] = !AUX[a];
-  }
-
-  outBuf[0] = Joy1_x;
-  outBuf[1] = Joy1_y;
-  outBuf[2] = Joy_x;
-  outBuf[3] = Joy_y;
-  outBuf[4] = map(AUX[0], 0, 1, Joy_MID - Joy_maximum, Joy_MID + Joy_maximum);
-  outBuf[5] = map(AUX[1], 0, 1, Joy_MID - Joy_maximum, Joy_MID + Joy_maximum);
-  outBuf[6] = map(AUX[2], 0, 1, Joy_MID - Joy_maximum, Joy_MID + Joy_maximum);
-  outBuf[7] = map(AUX[3], 0, 1, Joy_MID - Joy_maximum, Joy_MID + Joy_maximum);
+  int16_t * _i = _channal_0;
+  _i[0] = Joy1_x;
+  _i = _channal_1;
+  _i[0] = Joy1_y;
+  _i = _channal_2;
+  _i[0] = Joy_x;
+  _i = _channal_3;
+  _i[0] = Joy_y;
+  _i = _channal_4;
+  _i[0] = AUX[0] ? Joy_MID + Joy_maximum : Joy_MID - Joy_maximum;
+  _i = _channal_5;
+  _i[0] = AUX[1] ? Joy_MID + Joy_maximum : Joy_MID - Joy_maximum;
+  _i = _channal_6;
+  _i[0] = AUX[2] ? Joy_MID + Joy_maximum : Joy_MID - Joy_maximum;
+  _i = _channal_7;
+  _i[0] = AUX[3] ? Joy_MID + Joy_maximum : Joy_MID - Joy_maximum;
 }
-
