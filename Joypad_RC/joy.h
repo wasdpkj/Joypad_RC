@@ -18,12 +18,12 @@ int16_t Joy_x,
 boolean Joy_sw_l, Joy_sw_r;
 boolean AUX[4] = {0, 0, 0, 0};
 
-uint8_t key_pin[4] = {CH_SWITCH_1, CH_SWITCH_2, CH_SWITCH_3, CH_SWITCH_4}; //1 2 3 4
-boolean key_status[4],
-        key_cache[4];
+uint8_t key_pin[5] = {CH_SWITCH_1, CH_SWITCH_2, CH_SWITCH_3, CH_SWITCH_4, CH_JOYSTICK1_SW}; //1 2 3 4 5
+boolean key_status[5],
+        key_cache[5];
 
 void key_init() {
-  for (uint8_t a = 0; a < 4; a++) {
+  for (uint8_t a = 0; a < 5; a++) {
     key_status[a] = LOW;
     key_cache[a] = HIGH;
   }
@@ -83,7 +83,7 @@ int16_t Joy_i(int16_t _Joy_i, boolean _Joy_b, int16_t _Joy_MIN, int16_t _Joy_MAX
   return _Joy_a;
 }
 
-void joypadUpdata() {
+boolean joypadUpdata() {
   for (uint8_t a = 0; a < 4; a++)
     if (key_get(a, 0))  AUX[a] = !AUX[a];
   Joy_sw_l = Joypad.readButton(CH_SWITCH_L);
@@ -131,4 +131,6 @@ void joypadUpdata() {
       Joy1_y = Joy_i(3, true, Joy_MID - Joy_s_maximum, Joy_MID + Joy_s_maximum);
     }
   }
+
+  return  key_get(4, 1);
 }

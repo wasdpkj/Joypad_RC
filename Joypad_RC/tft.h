@@ -440,8 +440,7 @@ char *NAME[8] = {
   "ROLL", "PITCH", "YAW", "THROT", "AUX1", "AUX2", "AUX3", "AUX4"
 };
 
-void TFT_ready()
-{
+void TFT_ready() {
   tft.fillRect(0, 0, 128, 26, tft_colorA);
 
   tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2, 2, tft_bat_x, tft_bat_y, tft_colorB);
@@ -523,6 +522,7 @@ void TFT_run() {
     int8_t _C_x;
 
     if (outBuf[a] < Joy_MID) {
+      outBuf[a] = constrain(outBuf[a], Joy_MID - Joy_maximum, Joy_MID + Joy_maximum);
       _C_x = map(outBuf[a], Joy_MID - Joy_maximum, Joy_MID, _C_x_S, _C_x_M);
 
       _C_x_A0 = _C_x_S;

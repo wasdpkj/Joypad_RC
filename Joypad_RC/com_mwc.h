@@ -23,7 +23,10 @@ uint16_t write16(boolean a, int16_t b) {
   AA BB C8 DC 05 DC 05 D0 07 EF 03 DC 05 DC 05 DC 05 DC 05 E3
 */
 #define buf_length 0x10   //16
-#define buf_code 0xC8     //200
+#define buf_code_A 0xC8   //200
+#define buf_code_B 0xC9   //201
+boolean buf_code = true;
+boolean buf_type = true;
 #if !defined(RF_PORT)
 static byte buf_head[3] = {
   0x24, 0x4D, 0x3C
@@ -31,7 +34,7 @@ static byte buf_head[3] = {
 #endif
 static byte buf_data[buf_length];
 static byte buf_body;
-boolean mwc_send(int16_t _channal[8]) {
+boolean mwc_send(uint8_t _code, int16_t _channal[8]) {
 #if defined(RF_PORT)
   mwc_port.beginTransmission();
   mwc_port.write(0xaa);
@@ -41,14 +44,14 @@ boolean mwc_send(int16_t _channal[8]) {
     mwc_port.write(buf_head[a]);
   mwc_port.write(buf_length);
 #endif
-  mwc_port.write(buf_code);
+  mwc_port.write(_code);
   for (uint8_t a = 0; a < (buf_length / 2); a++) {
     buf_data[2 * a] = write16(LOW, _channal[a]);
     buf_data[2 * a + 1] = write16(HIGH, _channal[a]);
   }
   for (uint8_t a = 0; a < buf_length; a++)
     mwc_port.write(buf_data[a]);
-  buf_body = getChecksum(buf_length, buf_code, buf_data);
+  buf_body = getChecksum(buf_length, _code, buf_data);
   mwc_port.write(buf_body);
 #if defined(RF_PORT)
   mwc_port.endTransmission();

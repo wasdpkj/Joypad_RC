@@ -42,13 +42,13 @@ boolean nodeClock() {
   return (node_clock > 20) ? false : true;
 }
 
-boolean comSend(int16_t _channal[8]) {
+boolean comSend(uint8_t _code, int16_t _channal[8]) {
   if (mode_protocol) {
-    if (nrf_send(_channal))   //Robot
+    if (nrf_send(_code, _channal))  //Robot
       return true;
   }
   else {
-    if (mwc_send(_channal))  //QuadCopter
+    if (mwc_send(_code, _channal)) //QuadCopter
       return true;
   }
   return false;

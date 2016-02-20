@@ -3,8 +3,8 @@
 #if defined(LARGE_FLASH)
 #include "mpu.h"
 #endif
-#include "data.h"
 #include "com.h"
+#include "data.h"
 #include "tft.h"
 #include "eep.h"
 
@@ -105,6 +105,13 @@ void loop() {
   if (mode_mpu) getMPU();
 #endif
 
+  //DATA_begin------------------------------
+  buf_code = true;
+  if (!data_begin(&outBuf[0], &outBuf[1], &outBuf[2], &outBuf[3], &outBuf[4], &outBuf[5], &outBuf[6], &outBuf[7])) {
+    buf_code = false;
+    time4 = millis() + 500;
+  }
+
   //BAT--------------------------------
   if (time3 > millis()) time3 = millis();
   if (millis() - time3 > interval_time3) {
@@ -112,16 +119,17 @@ void loop() {
     time3 = millis();
   }
 
-  //DATA_begin------------------------------
-  data_begin(&outBuf[0], &outBuf[1], &outBuf[2], &outBuf[3], &outBuf[4], &outBuf[5], &outBuf[6], &outBuf[7]);
-
   //DATA_send-------------------------------
   if (millis() < time2) time2 = millis();
   if (millis() - time2 > interval_time2) {
-    if (comSend(outBuf)) comRece();
+    if (comSend(buf_code ? buf_code_A : buf_code_B, outBuf)) comRece();
     time2 = millis();
   }
 
   //TFT------------------------------------
-  TFT_run();
+  if (millis() < time4) time4 = millis();
+  if (millis() - time4 > interval_time4) {
+    TFT_run();
+    time4 = millis();
+  }
 }

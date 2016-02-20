@@ -7,9 +7,7 @@ int16_t outBuf[8] = {
   Joy_MID, Joy_MID, Joy_MID, Joy_MID, Joy_MID, Joy_MID, Joy_MID, Joy_MID
 };
 
-void data_begin(int16_t * _channal_0, int16_t * _channal_1, int16_t * _channal_2, int16_t * _channal_3, int16_t * _channal_4, int16_t * _channal_5, int16_t * _channal_6, int16_t * _channal_7) {
-  joypadUpdata();
-
+boolean data_begin(int16_t * _channal_0, int16_t * _channal_1, int16_t * _channal_2, int16_t * _channal_3, int16_t * _channal_4, int16_t * _channal_5, int16_t * _channal_6, int16_t * _channal_7) {
   if (mode_protocol) {  //Robot
     if (!Joy_sw_l) {
       Joy_x = Joy_MID;
@@ -21,7 +19,6 @@ void data_begin(int16_t * _channal_0, int16_t * _channal_1, int16_t * _channal_2
   else {       //QuadCopter
     if (!Joy_sw_l) Joy_y = Joy_MID - Joy_maximum;
   }
-
   int16_t * _i = _channal_0;
   _i[0] = Joy1_x;
   _i = _channal_1;
@@ -38,4 +35,31 @@ void data_begin(int16_t * _channal_0, int16_t * _channal_1, int16_t * _channal_2
   _i[0] = AUX[2] ? Joy_MID + Joy_maximum : Joy_MID - Joy_maximum;
   _i = _channal_7;
   _i[0] = AUX[3] ? Joy_MID + Joy_maximum : Joy_MID - Joy_maximum;
+
+  if (joypadUpdata()) {
+    if (Joy_y < Joy_MID - Joy_maximum + 50) {
+      buf_type = !buf_type;
+
+      int16_t * _i = _channal_0;
+      _i[0] = buf_type ? Joy_MID - Joy_maximum : Joy_MID;
+      _i = _channal_1;
+      _i[0] = !buf_type ? Joy_MID - Joy_maximum : Joy_MID;
+      _i = _channal_2;
+      _i[0] = Joy_MID;
+      _i = _channal_3;
+      _i[0] = Joy_MID;
+      _i = _channal_4;
+      _i[0] = Joy_MID;
+      _i = _channal_5;
+      _i[0] = Joy_MID;
+      _i = _channal_6;
+      _i[0] = Joy_MID;
+      _i = _channal_7;
+      _i[0] = Joy_MID;
+
+      return false;
+    }
+  }
+
+  return true;
 }

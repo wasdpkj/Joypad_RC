@@ -3,7 +3,7 @@
 #include "bat.h"
 
 //DEBUG-----------
-#define Serial_DEBUG
+//#define Serial_DEBUG
 
 #if defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega128RFA1__)
 #define LARGE_FLASH
@@ -45,10 +45,9 @@ uint8_t nrf_channal = 70;  //0~125
 #define MPU_maximum 70
 #endif
 
-
 //Time------------
 #define interval_TIME1 1000    //setup delay
 #define interval_time2 40      //send interval
 #define interval_time3 1000    //battery interval
-
+#define interval_time4 40      //tft interval
 

@@ -26,7 +26,7 @@ struct receive_a {
   uint32_t node_ms;
 };
 
-boolean nrf_send(int16_t _channal[8]) {
+boolean nrf_send(uint8_t _code, int16_t _channal[8]) {
 #ifdef Serial_DEBUG
   Serial.print("Sending...");
 #endif

@@ -1,7 +1,16 @@
+#include"arduino.h"
 //#define _DEBUG
+//#define _DEBUG_HEX
+//#define _DEBUG_DATA
+
+
 #define FROM ZigduinoRadio
 #define DEBUG Serial
+
+#define BUFFER_MAX 256
 #define CHANNEL_NUM 8
+#define TYPE_NUM_A 0xC8
+#define TYPE_NUM_B 0xC9
 
 #define SAFE_CHANNEL_VAL 950
 #define SAFE_TIME_OUT 200

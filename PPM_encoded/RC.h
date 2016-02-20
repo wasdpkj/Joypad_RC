@@ -1,13 +1,13 @@
 #include "arduino.h"
 
 /*
-#include <Servo.h>
- Servo myservo[8];   // a maximum of eight servo objects can be created
- int servo_pin[8]=
- {
- 4,5,6,7,8,9,10,11
- };
- */
+  #include <Servo.h>
+  Servo myservo[8];   // a maximum of eight servo objects can be created
+  int servo_pin[8]=
+  {
+  4,5,6,7,8,9,10,11
+  };
+*/
 #include <RCEncoder.h>
 #define PPM_PIN 2
 
@@ -16,11 +16,11 @@ unsigned long safe_time = 0;
 void RC_begin()
 {
   /*
-  for(int a=0;a<8;a++)
-   {
-   myservo[a].attach(servo_pin[a]);  // attaches the servo on pin 9 to the servo object
-   }
-   */
+    for(int a=0;a<8;a++)
+    {
+    myservo[a].attach(servo_pin[a]);  // attaches the servo on pin 9 to the servo object
+    }
+  */
   encoderBegin(PPM_PIN);
 }
 
@@ -54,5 +54,3 @@ void RC_safe_mode()
     }
   }
 }
-
-
