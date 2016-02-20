@@ -49,5 +49,5 @@ uint8_t nrf_channal = 70;  //0~125
 #define interval_TIME1 1000    //setup delay
 #define interval_time2 40      //send interval
 #define interval_time3 1000    //battery interval
-#define interval_time4 40      //tft interval
+#define interval_time4 50      //tft interval
 
