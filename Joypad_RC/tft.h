@@ -440,7 +440,14 @@ char *NAME[8] = {
   "ROLL", "PITCH", "YAW", "THROT", "AUX1", "AUX2", "AUX3", "AUX4"
 };
 
-void TFT_ready() {
+void TFT_ready(boolean _Mode) {
+  if (_Mode) {
+    tft.setTextColor(tft_colorA);
+    setFont_M;
+    tft.setCursor(buf_type ? 40 : 32, 5);
+    tft.print(buf_type ? "LOCK" : "UNLOCK");
+    delay(500);
+  }
   tft.fillRect(0, 0, 128, 26, tft_colorA);
 
   tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2, 2, tft_bat_x, tft_bat_y, tft_colorB);

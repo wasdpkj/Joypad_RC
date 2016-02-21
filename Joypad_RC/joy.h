@@ -84,6 +84,7 @@ int16_t Joy_i(int16_t _Joy_i, boolean _Joy_b, int16_t _Joy_MIN, int16_t _Joy_MAX
 }
 
 boolean joypadUpdata() {
+  boolean _k = key_get(4, 0);
   for (uint8_t a = 0; a < 4; a++)
     if (key_get(a, 0))  AUX[a] = !AUX[a];
   Joy_sw_l = Joypad.readButton(CH_SWITCH_L);
@@ -132,5 +133,5 @@ boolean joypadUpdata() {
     }
   }
 
-  return  key_get(4, 1);
+  return  _k;
 }

@@ -86,7 +86,7 @@ void setup() {
 #ifdef Serial_DEBUG
   Serial.println("\n\r TFT READY...");
 #endif
-  TFT_ready();
+  TFT_ready(false);
 
   //---------------
   comBegin();
@@ -109,6 +109,8 @@ void loop() {
   buf_code = true;
   if (!data_begin(&outBuf[0], &outBuf[1], &outBuf[2], &outBuf[3], &outBuf[4], &outBuf[5], &outBuf[6], &outBuf[7])) {
     buf_code = false;
+    TFT_clear();
+    TFT_ready(true);
     time4 = millis() + 500;
   }
 
