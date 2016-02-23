@@ -1,5 +1,7 @@
 #include "Arduino.h"
 #include "def.h"
+#include "bat.h"
+#include "time.h"
 #if defined(LARGE_FLASH)
 #include "mpu.h"
 #endif

@@ -1,6 +1,4 @@
 #include "Arduino.h"
-#include "time.h"
-#include "bat.h"
 
 //DEBUG-----------
 //#define Serial_DEBUG
