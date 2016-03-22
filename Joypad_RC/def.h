@@ -23,7 +23,7 @@ int8_t RSSI = -40;
 #if defined(RF_PORT)
 uint8_t mwc_channal = 11; //RF channel
 #else
-uint8_t mwc_channal = 4; //RF channel
+uint8_t mwc_channal = 4; //RF channel "9600", "19200", "38400", "57600", "115200"
 #endif
 
 #if  defined(__AVR_ATmega32U4__)

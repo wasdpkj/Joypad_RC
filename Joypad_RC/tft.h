@@ -244,11 +244,11 @@ boolean TFT_config() {
                 char *menu_str_c[5] = {"9600", "19200", "38400", "57600", "115200"};
 #endif
                 if (key_get(2, 1)) {
-                  mwc_channal--;
+                  mwc_channal++;
                   tft.fillRect(0, 40, tft_width, 100, tft_colorB);
                 }
                 if (key_get(3, 1)) {
-                  mwc_channal++;
+                  mwc_channal--;
                   tft.fillRect(0, 40, tft_width, 100, tft_colorB);
                 }
 

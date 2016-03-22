@@ -1,7 +1,8 @@
 #include "Arduino.h"
 #include <EEPROM.h>
 
-int16_t safe_check = 1111;
+#define VERSION 1500
+int16_t safe_check = VERSION;
 
 #define EEPROM_write(address, p) {int i = 0; byte *pp = (byte*)&(p);for(; i < sizeof(p); i++) EEPROM.write(address+i, pp[i]);}
 #define EEPROM_read(address, p)  {int i = 0; byte *pp = (byte*)&(p);for(; i < sizeof(p); i++) pp[i]=EEPROM.read(address+i);}
@@ -27,7 +28,7 @@ boolean eeprom_read() {
   config_type config_readback;
   EEPROM_read(0, config_readback);
 
-  if (config_readback.eeprom_safe_check != 1111)
+  if (config_readback.eeprom_safe_check != VERSION)
     return false;
 
   for (uint8_t a = 0; a < 4; a++) {
@@ -52,11 +53,13 @@ boolean eeprom_read() {
 
 void eeprom_write(bool _sta) {
   if (!_sta) {   //default
-    safe_check = 1111;
-
+    safe_check = VERSION;
     for (uint8_t a = 0; a < 4; a++) {
       joy_correct_min[a] = -512;
       joy_correct_max[a] = 512;
+    }
+    for (int i = 0 ; i < EEPROM.length() ; i++) {
+      EEPROM.write(i, 0);
     }
   }
 
