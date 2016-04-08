@@ -11,13 +11,15 @@ boolean data_begin(int16_t * _channal_0, int16_t * _channal_1, int16_t * _channa
   boolean _sta = true;
 
   if (joypadUpdata()) {
-    if (Joy_y < Joy_MID - Joy_maximum + 50) {
-      buf_type = !buf_type;
+    if (!mode_protocol) {
+      if (Joy_y < Joy_MID - Joy_maximum + 50) {
+        buf_type = !buf_type;
 
-      Joy1_x = buf_type ? Joy_MID - Joy_maximum : Joy_MID;
-      Joy1_y = !buf_type ? Joy_MID - Joy_maximum : Joy_MID;
+        Joy1_x = buf_type ? Joy_MID - Joy_maximum : Joy_MID;
+        Joy1_y = !buf_type ? Joy_MID - Joy_maximum : Joy_MID;
 
-      _sta = false;
+        _sta = false;
+      }
     }
   }
 

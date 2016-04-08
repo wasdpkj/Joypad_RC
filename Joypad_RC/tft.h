@@ -205,11 +205,11 @@ boolean TFT_config() {
               break;
             case 1: {
                 if (key_get(2, 1)) {
-                  Joy_deadzone_val--;
+                  Joy_deadzone_val++;
                   tft.fillRect(0, 40, tft_width, 100, tft_colorB);
                 }
                 if (key_get(3, 1)) {
-                  Joy_deadzone_val++;
+                  Joy_deadzone_val--;
                   tft.fillRect(0, 40, tft_width, 100, tft_colorB);
                 }
                 Joy_deadzone_val = constrain(Joy_deadzone_val, 0, 25);
@@ -266,11 +266,11 @@ boolean TFT_config() {
 
             case 2: {
                 if (key_get(2, 1)) {
-                  nrf_channal--;
+                  nrf_channal++;
                   tft.fillRect(0, 40, tft_width, 100, tft_colorB);
                 }
                 if (key_get(3, 1)) {
-                  nrf_channal++;
+                  nrf_channal--;
                   tft.fillRect(0, 40, tft_width, 100, tft_colorB);
                 }
                 nrf_channal = constrain(nrf_channal, 0, 125);
