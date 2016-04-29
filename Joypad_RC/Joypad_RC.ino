@@ -1,5 +1,4 @@
-#include "Arduino.h"
-#include "def.h"
+#include "userDef.h"
 #include "bat.h"
 #include "time.h"
 #if defined(LARGE_FLASH)
@@ -21,9 +20,9 @@
 #endif
 
 void setup() {
+  delay(500);
 #ifdef Serial_DEBUG
   Serial.begin(115200);
-  delay(100);
   Serial.println("========hello========");
 #endif
 

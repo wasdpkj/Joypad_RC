@@ -27,12 +27,12 @@ void initMPU() {
   }
 #ifdef Serial_DEBUG
   else
-    Serial.println(F("MPU6050 connection failed"));
+    Serial.println("MPU6050 connection failed");
 #endif
 
   // load and configure the DMP
 #ifdef Serial_DEBUG
-  Serial.println(F("Initializing DMP..."));
+  Serial.println("Initializing DMP...");
 #endif
   devStatus = mpu.dmpInitialize();
 
@@ -40,7 +40,7 @@ void initMPU() {
   if (devStatus == 0) {
     // turn on the DMP, now that it's ready
 #ifdef Serial_DEBUG
-    Serial.println(F("Enabling DMP..."));
+    Serial.println("Enabling DMP...");
 #endif
     mpu.setDMPEnabled(true);
     dmpReady = true;
@@ -48,9 +48,9 @@ void initMPU() {
   }
   else {
 #ifdef Serial_DEBUG
-    Serial.print(F("DMP Initialization failed (code "));
+    Serial.print("DMP Initialization failed (code ");
     Serial.print(devStatus);
-    Serial.println(F(")"));
+    Serial.println(")");
 #endif
   }
 }
@@ -62,7 +62,7 @@ void getMPU() {
   if (fifoCount == 1024) {
     mpu.resetFIFO();
 #ifdef Serial_DEBUG
-    Serial.println(F("FIFO overflow!"));
+    Serial.println("FIFO overflow!");
 #endif
   }
   else {
