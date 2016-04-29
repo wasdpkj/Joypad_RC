@@ -101,18 +101,16 @@ char *menu_str_a[4] = {
 
 #if defined(LARGE_FLASH)
 char *menu_str_b[4][3] = {
-  {"Joystick Correct.", "Dead Zone config"},
-  {"Mode", "Quadrotor Channel", "nRF24 Channel"},
-  {"TFT Theme", "TFT Rotation", "MCU Voltage"},
-  {"Gyroscope OFF", "Gyroscope ON"}
-};
 #else
 char *menu_str_b[3][3] = {
+#endif
   {"Joystick Correct.", "Dead Zone config"},
   {"Mode", "Quadrotor Channel", "nRF24 Channel"},
-  {"TFT Theme", "TFT Rotation", "MCU Voltage"},
-};
+  {"TFT Theme", "TFT Rotation"}
+#if defined(LARGE_FLASH)
+  , {"Gyroscope OFF", "Gyroscope ON"}
 #endif
+};
 
 void TFT_menu(int8_t _num, char *_data) {
   tft.drawRect(7, 49 + 15 * _num, 114, 16, tft_colorA);
@@ -159,8 +157,9 @@ boolean TFT_config() {
 
   return_menu = false;
   //-------------------------------
-  if (tft_cache)
+  if (tft_cache) {
     tft.fillRect(0, 40, tft_width, 100, tft_colorB);
+  }
 
   if (menu_sta == 2) {
     switch (menu_num_A) {
@@ -301,23 +300,6 @@ boolean TFT_config() {
                 menu_sta --;
               }
               break;
-            case 2: {
-                char *menu_str_c[2] = { "3.3V", "5.0V"};
-                return_menu = true;
-
-                if (key_get(2, 1) || key_get(3, 1)) {
-                  mcu_voltage = !mcu_voltage;
-                  tft.fillRect(0, 40, tft_width, 100, tft_colorB);
-                }
-
-                TFT_cursor(mcu_voltage);
-
-                for (uint8_t c = 0; c < 2; c++) {
-                  TFT_menu(c, menu_str_c[c]);
-                }
-                //                tft.fillRect(0, 40, tft_width, 100,tft_colorB);
-              }
-              break;
           }
 
         }
@@ -345,12 +327,13 @@ boolean TFT_config() {
   //----------------------------
   if (menu_sta == 1) {
 #if defined(LARGE_FLASH)
-    int8_t meun_b_max[5] = {1, 2, 2, 1, 0};
+    int8_t meun_b_max[5] = {1, 2, 1, 1, 0};
 #else
-    int8_t meun_b_max[4] = {1, 2, 2, 0};
+    int8_t meun_b_max[4] = {1, 2, 1, 0};
 #endif
-    if (!meun_b_max[menu_num_A])
+    if (!meun_b_max[menu_num_A]) {
       return false;
+    }
     else {
       if (key_get(2, 1)) {
         tft.fillRect(0, 40, 5, 100, tft_colorB);

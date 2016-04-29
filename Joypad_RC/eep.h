@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include <EEPROM.h>
 
-#define VERSION 1500
+#define VERSION 1600
 int16_t safe_check = VERSION;
 
 #define EEPROM_write(address, p) {int i = 0; byte *pp = (byte*)&(p);for(; i < sizeof(p); i++) EEPROM.write(address+i, pp[i]);}
@@ -20,7 +20,6 @@ struct config_type {
   uint8_t eeprom_nrf_channal;
   boolean eeprom_tft_theme;
   boolean eeprom_tft_rotation;
-  boolean eeprom_mcu_voltage;
 };
 
 //======================================
@@ -46,7 +45,6 @@ boolean eeprom_read() {
   nrf_channal = config_readback.eeprom_nrf_channal;
   tft_theme = config_readback.eeprom_tft_theme;
   tft_rotation = config_readback.eeprom_tft_rotation;
-  mcu_voltage = config_readback.eeprom_mcu_voltage;
 
   return true;
 }
@@ -58,7 +56,7 @@ void eeprom_write(bool _sta) {
       joy_correct_min[a] = -512;
       joy_correct_max[a] = 512;
     }
-    for (int i = 0 ; i < EEPROM.length() ; i++) {
+    for (int i = 0 ; i < 256 ; i++) {
       EEPROM.write(i, 0);
     }
   }
@@ -81,7 +79,6 @@ void eeprom_write(bool _sta) {
   config.eeprom_nrf_channal = nrf_channal;
   config.eeprom_tft_theme = tft_theme;
   config.eeprom_tft_rotation = tft_rotation;
-  config.eeprom_mcu_voltage = mcu_voltage;
 
   EEPROM_write(0, config);
 }
