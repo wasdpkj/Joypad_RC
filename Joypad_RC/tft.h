@@ -436,12 +436,8 @@ void TFT_ready(boolean _Mode) {
   tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2, 2, tft_bat_x, tft_bat_y, tft_colorB);
   tft.drawRect(tft_width - tft_bat_x_s - 2, 2 + (tft_bat_y - tft_bat_y_s) / 2, tft_bat_x_s, tft_bat_y_s, tft_colorB);
 
-  tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2, 2 + 2 + tft_bat_y, tft_bat_x, tft_bat_y, tft_colorB);
-  tft.drawRect(tft_width - tft_bat_x_s - 2, 2 + 2 + tft_bat_y + (tft_bat_y - tft_bat_y_s) / 2, tft_bat_x_s, tft_bat_y_s, tft_colorB);
-
-  for (int a = 0; a < 4; a++) {
-    tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a), 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), 4, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25), tft_colorB);
-  }
+  tft.drawRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 4 - tft_bat_x, 2, tft_bat_x, tft_bat_y, tft_colorB);
+  tft.drawRect(tft_width - tft_bat_x_s - 2 - 4 - tft_bat_x, 2 + (tft_bat_y - tft_bat_y_s) / 2, tft_bat_x_s, tft_bat_y_s, tft_colorB);
 
   tft.setTextColor(tft_colorB);
   setFont_S;
@@ -462,8 +458,13 @@ void TFT_ready(boolean _Mode) {
   }
 }
 
-boolean _a = false, _b = false;
+boolean _a = false;
+unsigned long _b = 0;
 void TFT_run() {
+  if (!nodeClock()) {
+    RSSI = -127;
+  }
+
   if (outBuf[3] > (Joy_MID - Joy_maximum)) {
     if (_a) {
       Joy_time[0] = millis() - Joy_time[1];
@@ -471,11 +472,12 @@ void TFT_run() {
     }
     Joy_time[1] = millis() - Joy_time[0];
   }
-  else
+  else {
     _a = true;
+  }
 
-  if (!_b && ((Joy_time[1] / 1000) % 2)) {
-    _b = !_b;
+  if (millis() < _b) _b = millis();
+  if (millis() - _b > 500) {
     tft.fillRect(_Q_font_x + 30, 16, 45, 7, tft_colorA);
     tft.setTextColor(tft_colorB);
     tft.setCursor(_Q_font_x + 30, 16);
@@ -483,28 +485,20 @@ void TFT_run() {
     tft.print("m");
     tft.print((Joy_time[1] / 1000) % 60);
     tft.print("s");
-  }
-  _b = boolean((Joy_time[1] / 1000) % 2);
 
-  //battery------------------
-  tft.fillRect(tft_width - tft_bat_x - 3, 3, map(_V_bat, _V_min, _V_max, 0, tft_bat_x - 2) , tft_bat_y - 2, tft_colorB);
-  tft.fillRect(tft_width - tft_bat_x - 3 + map(_V_bat, _V_min, _V_max, 0, tft_bat_x - 2), 3, map(_V_bat, _V_min, _V_max, tft_bat_x - 2, 0) , tft_bat_y - 2, tft_colorA);
+    tft.fillRect(tft_width - 44, 16, 44, 7, tft_colorA);
+    tft.setTextColor(tft_colorB);
+    tft.setCursor(tft_width - 44, 16);
+    tft.print(RSSI);
+    tft.print("dBm");
 
-  tft.fillRect(tft_width - tft_bat_x - 3, 3 + 2 + tft_bat_y, map(_V_bat_RC, _V_min, _V_max, 0, tft_bat_x - 2) , tft_bat_y - 2, tft_colorB);
-  tft.fillRect(tft_width - tft_bat_x - 3 + map(_V_bat_RC, _V_min, _V_max, 0, tft_bat_x - 2), 3 + 2 + tft_bat_y, map(_V_bat_RC, _V_min, _V_max, tft_bat_x - 2, 0) , tft_bat_y - 2, tft_colorA);
+    //battery------------------
+    tft.fillRect(tft_width - tft_bat_x - 3, 3, map(_V_bat, _V_min, _V_max, 0, tft_bat_x - 2) , tft_bat_y - 2, tft_colorB);
+    tft.fillRect(tft_width - tft_bat_x - 3 + map(_V_bat, _V_min, _V_max, 0, tft_bat_x - 2), 3, map(_V_bat, _V_min, _V_max, tft_bat_x - 2, 0) , tft_bat_y - 2, tft_colorA);
+    tft.fillRect(tft_width - tft_bat_x - 3 - 4 - tft_bat_x, 3, map(_V_bat_RC, _V_min, _V_max, 0, tft_bat_x - 2) , tft_bat_y - 2, tft_colorB);
+    tft.fillRect(tft_width - tft_bat_x - 3 - 4 - tft_bat_x + map(_V_bat_RC, _V_min, _V_max, 0, tft_bat_x - 2), 3, map(_V_bat_RC, _V_min, _V_max, tft_bat_x - 2, 0) , tft_bat_y - 2, tft_colorA);
 
-  if (!nodeClock())
-    RSSI = -90;
-  else if (!mode_protocol) {
-    RSSI = constrain(RSSI, -90, -40);
-  }
-  int8_t _RSSI = map(RSSI, -90, -40, 3, 0);
-
-  for (int a = 0; a < 4; a++) {
-    if ((a == 3 && _RSSI == 0) || (a == 2 && _RSSI <= 1) || (a == 1 && _RSSI <= 2) || (a == 0 && _RSSI <= 3))
-      tft.fillRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a) + 1, 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25) + 1, 4 - 2, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25) - 2, tft_colorB);
-    else
-      tft.fillRect(tft_width - tft_bat_x - tft_bat_x_s - 2 - 1 - 5 * (4 - a) + 1, 2 + (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25) + 1, 4 - 2, tft_bat_y + 2 + tft_bat_y - (tft_bat_y + 2 + tft_bat_y) * (1 - (a + 1) * 0.25) - 2, tft_colorA);
+    _b = millis();
   }
 
   for (uint8_t a = 0; a < 8; a++) {
