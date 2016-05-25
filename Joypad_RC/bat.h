@@ -9,12 +9,12 @@ int8_t _V_bat_RC = _V_min;
 
 #if F_CPU == 16000000
 #if defined(RF_PORT)
-boolean mcu_voltage = 33; // 3.3
+#define mcu_voltage 33 // 3.3
 #else
-boolean mcu_voltage = 50; // 5.0
+#define mcu_voltage 50 // 5.0
 #endif
 #else
-boolean mcu_voltage = 33; // 3.3
+#define mcu_voltage 33 // 3.3
 #endif
 
 #define _V_fix 0.2  //fix battery voltage

@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include <EEPROM.h>
 
-#define VERSION 1600
+#define VERSION 1700
 int16_t safe_check = VERSION;
 
 #define EEPROM_write(address, p) {int i = 0; byte *pp = (byte*)&(p);for(; i < sizeof(p); i++) EEPROM.write(address+i, pp[i]);}
