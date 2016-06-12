@@ -18,8 +18,7 @@ int8_t _V_bat_RC = _V_min;
 #endif
 
 #define _V_fix 3  //fix mcu voltage,+0.3v
-#define _V_math(Y) (((Y*analogRead(PIN_bat)/1023.0f)/(33.0f/(51.0f+33.0f))))
 
 uint8_t batVoltage() {
-  return constrain(_V_math(mcu_voltage + _V_fix), _V_min, _V_max);
+  return constrain(((((mcu_voltage + _V_fix) * analogRead(PIN_bat) / 1023.0f) / (33.0f / (51.0f + 33.0f)))), _V_min, _V_max);
 }
