@@ -16,7 +16,7 @@
 //MPU===================================
 #include "Wire.h"
 #include "I2Cdev.h"
-#include "MPU6050_6Axis_Microduino.h"
+#include "MPU6050_6Axis_MotionApps20.h"
 #endif
 
 void setup() {

@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include <Microduino_Joypad.h>
+#include <Joypad.h>
 
 #define Mpu_maximum 70
 #define Joy_s_maximum 200 //MAX 300
