@@ -1,67 +1,61 @@
-#include <ZigduinoRadio.h>
 #include "def.h"
-#include "RC.h"
-#include "RCdata.h"
+#include <Microduino_Protocol.h>
+ProtocolZig protocolA(16); //数据长度为16个字节
 
-//#include  <Servo.h>
-#include <RCEncoder.h>
+#include <Microduino_PPM.h>
+PPM PPM;
 
-void setup()
-{
-  FROM.begin(11);
-#ifdef _DEBUG
+uint16_t rcData[8];
+uint16_t recData[8];
+uint8_t recCmd;
+
+uint32_t safe_time = 0;
+
+void setup() {
+#ifdef DEBUG
   DEBUG.begin(115200);
 #endif
-  RC_begin();
+  protocolA.begin(CHANNEL_ZIG);  //括号内参数为CoreRF通道号
+  PPM.beginWrite(OUTPUT_PIN, CHANNEL_NUM);  //引脚,通道数（不填默认8）
+  PPM.setFix(-5);    //发送数据修正,单位us
 }
 
-unsigned long ERROR_NUM = 0;
-unsigned long ERROR_NUM_CACHE = 0;
-unsigned long ERROR_TIME = 0;
-unsigned long ERROR_SPEED = 0;
-// the loop routine runs over and over again forever:
-void loop()
-{
-  if (Available())
-  {
-    switch (Protocol(CHANNEL_NUM))
-    {
-      case 1:
-        ERROR_TIME = millis();
-        break;
-      case 3:
-#ifdef _DEBUG
-        DEBUG.println("\n\rsendDATA READY");
+void loop() {
+  if (protocolA.available()) {
+    protocolA.readWords(&recCmd, recData, 8);
+#ifdef DEBUG
+    DEBUG.print("recCmd: ");
+    DEBUG.print(recCmd);
+    DEBUG.print("  Data:");
 #endif
-        if (type == TYPE_NUM_B) {
-          Serial.println("OK!");
-          delay(500);
-        }
-        RC_write(RC_data);
-        ERROR_NUM++;
-#ifdef _DEBUG
-        DEBUG.print("True loop: ");
-        DEBUG.print(ERROR_NUM);
-        DEBUG.print(",Time: ");
-        DEBUG.println(millis() - ERROR_TIME);
+    for (uint8_t i = 0; i < 8; i++) {
+#ifdef DEBUG
+      DEBUG.print(" ");
+      DEBUG.print(recData[i]);
 #endif
-        break;
-      case 0:
-#ifdef _DEBUG
-        DEBUG.println("DATA ERROR");
-#endif
-        ERROR_NUM = 0;
-        break;
+      rcData[i] = recData[PPM_LINE[i]];
     }
+    for (uint8_t i = 0; i < 8; i++) {
+      if (rcData[i] >= 1000 && rcData[i] <= 2000) {
+        //myservo[i].writeMicroseconds(RC_write_i[i]);
+        PPM.Write(i, rcData[i]);
+      }
+    }
+#ifdef DEBUG
+    DEBUG.println();
+#endif
+    safe_time = millis();
   }
 
-  //    if (millis() - ERROR_SPEED > 1000)
-  //    {
-  //      Serial.print("\t\t\t\t\t\t loop:");
-  //      Serial.println((ERROR_NUM - ERROR_NUM_CACHE));
-  //      ERROR_NUM_CACHE = ERROR_NUM;
-  //      ERROR_SPEED = millis();
-  //    }
 
-  RC_safe_mode();
+  if (millis() < safe_time) safe_time = millis();
+  if (millis() - safe_time > SAFE_TIME_OUT) {
+#ifdef DEBUG
+    DEBUG.println("\n\rSAFE_TIME_OUT");
+#endif
+    for (int i = 0; i < 8; i++) {
+      //myservo[i].writeMicroseconds(SAFE_CHANNEL_VAL);
+      PPM.Write(i, SAFE_CHANNEL_VAL);
+    }
+  }
 }
