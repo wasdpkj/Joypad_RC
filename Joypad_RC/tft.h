@@ -1,7 +1,7 @@
 #include "Arduino.h"
 
 #include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7735.h> // Hardware-specific library
+#include <Adafruit_TFT.h> // Hardware-specific library
 #include <SPI.h>
 
 Adafruit_ST7735 tft = Adafruit_ST7735(5, 4, -1);    //cs,dc,rst
@@ -52,7 +52,7 @@ void TFT_init(boolean _init, boolean _rot) {
   tft_colorA = tft_theme ? TFT_BUT : TFT_TOP;
 
   if (_init) {
-    tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
+    tft.begin(SPI_DEFAULT_FREQ);   // initialize a ST7735S chip, black tab
     //  Serial.println("init");
     tft.fillScreen(tft_colorB);
 
