@@ -25,7 +25,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("========hello========");
 #endif
-
+  analogReference(EXTERNAL);
   //---------------
   key_init();
 
