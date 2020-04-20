@@ -58,6 +58,8 @@ void TFT_init(boolean _init, boolean _rot) {
 
     if (_rot)
       tft.setRotation(2);
+    else
+      tft.setRotation(0);
   }
 
   tft.fillRect(0, 0, tft_width, 40, tft_colorA);
